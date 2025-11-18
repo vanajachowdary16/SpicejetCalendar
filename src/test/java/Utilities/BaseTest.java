@@ -58,6 +58,11 @@ public class BaseTest {
         
         wait.until(ExpectedConditions.elementToBeClickable(locator)).click();
     }
+    
+public static void clickOnLocatedElement(By locator) {
+        
+        wait.until(ExpectedConditions.visibilityOfElementLocated(locator)).click();
+    }
 
     public static void clearData(By locator) {
       
