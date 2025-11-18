@@ -31,11 +31,13 @@ public class SpicejetCalendarTest {
     }
 
     @Test
-    public void testSpicejtDatePicker() {
+    public void testSpicejtDatePicker() throws InterruptedException {
     	
         spicejetpageobjects.enterFromToDetails("Chennai", "Delhi");
         spicejetpageobjects.selectDate();
         spicejetpageobjects.openPassengerPopupAndAddAdult();
         spicejetpageobjects.clickSearch();
+        SpicejetCalenderPageObjects.waitForpageToLoad(driver);
+        spicejetpageobjects.printFlights();
     }
 }
