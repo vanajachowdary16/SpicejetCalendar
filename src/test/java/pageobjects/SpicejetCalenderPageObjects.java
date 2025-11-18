@@ -106,11 +106,10 @@ public class SpicejetCalenderPageObjects extends BaseTest {
                 for (WebElement Name : flightNames) {
                 	
                 	 flightName = Name.getText();
-                	System.out.println(flightName);
-                	
+                	String price = flight.findElement(By.id("selected-onward-container")).getText();
+                    System.out.println("Flight: " + flightName + " | Price: " + price);              	
                 }
-                String price = flight.findElement(By.id("selected-onward-container")).getText();
-                System.out.println("Flight: " + flightName + " | Price: " + price);
+                
             } catch (Exception e) {
                 System.out.println("Problem reading flight details: " + e.getMessage());
             }
