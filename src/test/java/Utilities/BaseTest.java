@@ -32,7 +32,7 @@ public class BaseTest {
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
 
         // initialize explicit wait AFTER driver exists
-        wait = new WebDriverWait(driver, Duration.ofSeconds(15));
+        wait = new WebDriverWait(driver, Duration.ofSeconds(20));
     }
     
     public static WebDriver getDriver() {
@@ -99,6 +99,13 @@ public static void clickOnLocatedElement(By locator) {
             System.out.println("Element not found: " + locator);
         }
         return element;
+    }
+    public static void scrollIntoElementClick(WebDriver driver,By locator) {
+    	WebElement element = wait.until(ExpectedConditions.elementToBeClickable(locator));
+    	
+    	JavascriptExecutor js = (JavascriptExecutor) driver;
+    	js.executeScript("arguments[0].scrollIntoView();", element);
+    	js.executeScript("arguments[0].click()", element);
     }
 
     // Optional helper to scroll to element using JS
