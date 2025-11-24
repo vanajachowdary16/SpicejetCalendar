@@ -6,12 +6,12 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import Utilities.BaseTest;
-import pageobjects.SpicejetCalenderPageObjects;
+import pageobjects.SpicejetCalenderPageObjects2;
 
 public class SpicejetCalendarTest {
 
     private WebDriver driver;
-    private SpicejetCalenderPageObjects spicejetpageobjects;
+    private SpicejetCalenderPageObjects2 spicejetpageobjects;
 
     public final static String spicejetUrl = "https://www.spicejet.com/";
 
@@ -20,12 +20,12 @@ public class SpicejetCalendarTest {
 
     	BaseTest.launchBrowser();
 		driver=BaseTest.getDriver();
-		spicejetpageobjects= new SpicejetCalenderPageObjects(driver);
+		spicejetpageobjects= new SpicejetCalenderPageObjects2(driver);
 		driver.get(spicejetUrl);	
 		
     }
 
-    @AfterSuite
+   // @AfterSuite
     public void tearDownBrowser() {
         BaseTest.tearDown();
     }
@@ -34,10 +34,10 @@ public class SpicejetCalendarTest {
     public void testSpicejtDatePicker() throws InterruptedException {
     	
         spicejetpageobjects.enterFromToDetails("Chennai", "Delhi");
-        spicejetpageobjects.selectDate();
+        spicejetpageobjects.selectDate2();
         spicejetpageobjects.openPassengerPopupAndAddAdult();
         spicejetpageobjects.clickSearch();
-        SpicejetCalenderPageObjects.waitForpageToLoad(driver);
+        SpicejetCalenderPageObjects2.waitForpageToLoad(driver);
         spicejetpageobjects.printFlights();
     }
 }
