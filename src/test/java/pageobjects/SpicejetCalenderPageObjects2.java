@@ -5,8 +5,10 @@ import java.util.List;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import Utilities.BaseTest;
@@ -26,10 +28,12 @@ public class SpicejetCalenderPageObjects2 extends BaseTest {
 	public static final String fromAirportName = "Chennai International Airport";
 	public static final String toAirportName = "DEL - Delhi, India";
 
-	public static final By depatureDate = By.xpath("//div[@data-testid='undefined-month-" + depature_month + "-"
-			+ depature_year + "']//div[@data-testid='undefined-calendar-day-" + depature_day + "']");
-	public static final By returnDate = By.xpath("//div[@data-testid='undefined-month-" + return_month + "-"
-			+ return_year + "']//div[@data-testid='undefined-calendar-day-" + return_day + "']");
+	//locator to select date 
+	public static final By depatureMonthLocator = By.xpath("//div[@data-testid='undefined-month-"+depature_month+"-"+depature_year+"']");
+	public static final By returnMonthLocator = By.xpath("//div[@data-testid='undefined-month-"+return_month+"-"+return_year+"']");
+	public static final By depatureDay = By.xpath(".//div[@data-testid='undefined-calendar-day-"+depature_day+"']");
+	public static final By returnDay = By.xpath(".//div[@data-testid='undefined-calendar-day-"+return_day+"']");
+	
 	public static final By calenderIconLocator = By
 			.xpath("//div[contains(text(), 'Departure Date')]//following-sibling::div");
 	public static final By calenderIconLocator2 = By
@@ -44,20 +48,21 @@ public class SpicejetCalenderPageObjects2 extends BaseTest {
 	// ("//div[@data-testid='to-testID-origin']//input");
 	public static final By selectFromAirportLocator = By.xpath("//div[contains(text(), " + fromAirportName + "')]");
 	public static final By selectToAirportLocator = By.xpath("//div[contains(text(), " + toAirportName + "')]");
-	public static final By passengerButton = By
-			.xpath("//div[contains(text(), 'Passengers')]//following-sibling::div");
+	public static final By passengerButton = By.xpath("//div[contains(text(), 'Passengers')]//following-sibling::div");
 	// ("//div[contains(text(), 'Adult')]");
 	// ("//div[@data-testid='home-page-travellers']");
-	public static final By addOneAdult = By.xpath("//div[data-testid='home-travellers-adult-" + adultCount + "']");
+	public static final By addOneAdult = By.xpath("//div[@data-testid='home-travellers-adult-" + adultCount + "']");
 	// ("//div[@data-testid='Adult-testID-plus-one-cta']");
 
-	public static final By doneButton = By.xpath("//div[data-testid='home-travellers-action-btn']");
+	public static final By doneButton = By.xpath("//div[text()='Done']");
 	public static final By searchButton = By.xpath("//div[@data-testid='home-page-flight-cta']");
 	public static final By flightsList = By.id("onward-flight-container");
 
 	String flightName = null;
 
 	static WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
+	
+	protected static JavascriptExecutor js = (JavascriptExecutor) driver;
 
 	// Default constructor (no driver assignment needed because we use
 	// BaseTest.driver)
@@ -65,7 +70,6 @@ public class SpicejetCalenderPageObjects2 extends BaseTest {
 		this.driver = driver;
 		// no-op
 	}
-
 	// Actions use BaseTest helper methods (clickOn, sendKeysInput, etc.)
 	public void enterFromToDetails(String from, String to) {
 		// clicking and typing via BaseTest helpers ensures waits are used correctly
@@ -77,24 +81,84 @@ public class SpicejetCalenderPageObjects2 extends BaseTest {
 		BaseTest.clearData(toInputLocator);
 		BaseTest.sendKeysInput(toInputLocator, to);
 	}
+	
+	// Scrolls the calendar until the given month-year element exists, then returns it
+	private WebElement scrollUntilMonthVisible(WebDriver driver, By monthLocator) {
+	    JavascriptExecutor js = (JavascriptExecutor) driver;
 
-	public void selectDate() throws InterruptedException {
-		// BaseTest.clickOn(calenderIconLocator);
-		// Thread.sleep(5000);
-		BaseTest.scrollIntoElementClick(driver, depatureDate);
-		// BaseTest.clickOn(depatureDate);
-		// BaseTest.clickOn(calenderIconLocator2);
-		BaseTest.scrollIntoElementClick(driver, returnDate);
-		// BaseTest.clickOn(returnDate);
-		String selectedDate = BaseTest.getText(calenderIconLocator2);
-		System.out.println(selectedDate);
+	    // Try up to 15 times to scroll down
+	    for (int i = 0; i < 15; i++) {
 
+	        // 1. Check if month is present
+	        List<WebElement> months = driver.findElements(monthLocator);
+	        if (!months.isEmpty()) {
+	            WebElement month = months.get(0);
+	            js.executeScript("arguments[0].scrollIntoView(true);", month);
+	            return month;
+	        }
+
+	        // 2. If not present yet, scroll the page / calendar down a bit
+	        //    (SpiceJet hooks scroll on the page body for the calendar)
+	        driver.findElement(By.tagName("body")).sendKeys(Keys.PAGE_DOWN);
+
+	        // Small pause so the site can load next months
+	        try {
+	            Thread.sleep(400);
+	        } catch (InterruptedException e) {
+	            // ignore
+	        }
+	    }
+
+	    throw new RuntimeException("Month not found: " + monthLocator.toString());
 	}
 
+	public void selectDate2() {
+
+	    // ===== Departure =====
+	    WebElement depMonth = scrollUntilMonthVisible(driver, depatureMonthLocator);
+	    WebElement depDayElement = depMonth.findElement(depatureDay);
+	    depDayElement.click();
+
+	    // ===== Re-open Return date calendar =====
+	    ((JavascriptExecutor) driver).executeScript("window.scrollTo(0, 0);");
+	    driver.findElement(calenderIconLocator2).click();
+
+	    // ===== Return =====
+	    WebElement retMonth = scrollUntilMonthVisible(driver, returnMonthLocator);
+	    WebElement retDayElement = retMonth.findElement(returnDay);
+	    retDayElement.click();
+	    System.out.println(driver.findElement(calenderIconLocator2).getText());
+	}
+	
+	public void selectDate() {
+		WebElement date1 =BaseTest.scrollIntoElement(driver, depatureMonthLocator);
+		date1.findElement(depatureDay).click();
+		BaseTest.scrollIntoElementClick(driver, calenderIconLocator2);
+		WebElement date2 =BaseTest.scrollIntoElement(driver, returnMonthLocator);
+		date2.findElement(returnDay).click();
+	}
 	public void openPassengerPopupAndAddAdult() {
-		BaseTest.clickOn(passengerButton);
-		BaseTest.scrollIntoElementClick(driver, addOneAdult);
+		js.executeScript("window.scrollTo(0, 0);");
+		 BaseTest.clickOn(passengerButton);
+		 BaseTest.isElementShowed(passengerButton);
+	    int desiredAdults = Integer.parseInt(adultCount);
+	    if (desiredAdults == 1) {
+	    	 
+	    	BaseTest.scrollIntoElementClick(driver, doneButton);
+	        
+	    }else {
+	    	BaseTest.scrollIntoElement(driver, addOneAdult);
+	    	BaseTest.clickOn(doneButton);
+	    }
+	}
+	public void openPassengerPopupAndAddAdult1() {
+		BaseTest.scrollIntoElementClick(driver, passengerButton);
+		System.out.println(BaseTest.isElementShowed(passengerButton));
+		BaseTest.scrollIntoElement(driver, addOneAdult);
+		System.out.println(BaseTest.isElementShowed(doneButton));
 		BaseTest.clickOn(doneButton);
+		
+		
 	}
 
 	public void clickSearch() {

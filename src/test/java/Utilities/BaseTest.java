@@ -23,13 +23,14 @@ public class BaseTest {
     // shared browser for tests + page objects that extend BaseTest
     protected static WebDriver driver;
     protected static WebDriverWait wait;
+    protected static JavascriptExecutor js = (JavascriptExecutor) driver;
 
     @BeforeMethod
     public static void launchBrowser() {
         // initialize the driver here (ensure chromedriver is on PATH or set system property)
         driver = new ChromeDriver();
         driver.manage().window().maximize();
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(15));
 
         // initialize explicit wait AFTER driver exists
         wait = new WebDriverWait(driver, Duration.ofSeconds(20));
@@ -78,7 +79,7 @@ public static void clickOnLocatedElement(By locator) {
     public static void sendKeysInput(By locator, String testData) {
      
         WebElement element = wait.until(ExpectedConditions.elementToBeClickable(locator));
-        element.clear();
+        //element.clear();
         element.sendKeys(testData);
     }
 
@@ -100,18 +101,37 @@ public static void clickOnLocatedElement(By locator) {
         }
         return element;
     }
+    public static WebElement scrollIntoElement(WebDriver driver,By locator) {
+    	WebElement element = wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
+    	((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView();", element);
+    	
+    	return element;
+    	
+    }
+    
     public static void scrollIntoElementClick(WebDriver driver,By locator) {
     	WebElement element = wait.until(ExpectedConditions.elementToBeClickable(locator));
+        ((JavascriptExecutor) driver).executeScript("window.scrollTo(0, 0);");
+    	((JavascriptExecutor) driver).executeScript("arguments[0].click();", element);
     	
-    	JavascriptExecutor js = (JavascriptExecutor) driver;
-    	js.executeScript("arguments[0].scrollIntoView();", element);
-    	js.executeScript("arguments[0].click()", element);
+    	
     }
-
+    public static void jsClick(WebDriver driver, WebElement element)
+    {    	
+    	((JavascriptExecutor) driver).executeScript("arguments[0].click();", element);
+    	//js.executeScript("arguments[0].click()", element);
+    }
     // Optional helper to scroll to element using JS
     public static void jsScrollToElement(WebElement element) {
         try {
             getJs().executeScript("arguments[0].scrollIntoView();", element);
         } catch (Exception ignored) { }
+    }
+    public static boolean isElementShowed(By locator) {
+    	WebElement located =findElementByLocator(locator);
+    	if(located.isDisplayed()) {
+			System.out.println("reached till " +located.getText()+ " element");
+    	}
+    	return true;
     }
 }
