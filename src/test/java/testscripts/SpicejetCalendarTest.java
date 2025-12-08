@@ -5,7 +5,7 @@ import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import Utilities.BaseTest;
+import Utilities.BrowserUtility;
 import pageobjects.SpicejetCalenderPageObjects2;
 
 public class SpicejetCalendarTest {
@@ -14,12 +14,14 @@ public class SpicejetCalendarTest {
     private SpicejetCalenderPageObjects2 spicejetpageobjects;
 
     public final static String spicejetUrl = "https://www.spicejet.com/";
+	BrowserUtility browserUtility = new BrowserUtility();
 
     @BeforeClass
     public void setUp() {
 
-    	BaseTest.launchBrowser();
-		driver=BaseTest.getDriver();
+
+		browserUtility.launchBrowser();
+		driver=browserUtility.getDriver();
 		spicejetpageobjects= new SpicejetCalenderPageObjects2(driver);
 		driver.get(spicejetUrl);	
 		
@@ -27,7 +29,7 @@ public class SpicejetCalendarTest {
 
    // @AfterSuite
     public void tearDownBrowser() {
-        BaseTest.tearDown();
+    	browserUtility.tearDown();
     }
 
     @Test

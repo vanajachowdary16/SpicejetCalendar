@@ -8,9 +8,9 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import Utilities.BaseTest;
+import Utilities.BrowserUtility;
 
-public class SpicejetCalenderPageObjects extends BaseTest {
+public class SpicejetCalenderPageObjects extends BrowserUtility {
 
     // Only By locators at class level — no WebElement or wait initialization here
 	
@@ -33,7 +33,7 @@ public class SpicejetCalenderPageObjects extends BaseTest {
     public static final By searchButton = By.xpath("//div[@data-testid='home-page-flight-cta']");
     public static final By flightsList = By.id("onward-flight-container");
     
-   
+    BrowserUtility browserUtility = new BrowserUtility();
     
     String flightName=null;
     
@@ -48,34 +48,34 @@ public class SpicejetCalenderPageObjects extends BaseTest {
     // Actions use BaseTest helper methods (clickOn, sendKeysInput, etc.)
     public void enterFromToDetails(String from, String to) {
         // clicking and typing via BaseTest helpers ensures waits are used correctly
-        BaseTest.clickOn(fromInputLocator);
-        BaseTest.clearData(fromInputLocator);
-        BaseTest.sendKeysInput(fromInputLocator, from);
+    	browserUtility.clickOn(fromInputLocator);
+    	browserUtility.clearData(fromInputLocator);
+    	browserUtility.sendKeysInput(fromInputLocator, from);
 
-        BaseTest.clickOn(toInputLocator);
-        BaseTest.clearData(toInputLocator);
-        BaseTest.sendKeysInput(toInputLocator, to);
+    	browserUtility.clickOn(toInputLocator);
+    	browserUtility.clearData(toInputLocator);
+    	browserUtility.sendKeysInput(toInputLocator, to);
     }
     
     public void selectDate() throws InterruptedException {
     	//BaseTest.clickOn(calenderIconLocator);
     	//Thread.sleep(5000);
-    	BaseTest.clickOn(depatureDate);
-    	BaseTest.clickOn(calenderIconLocator2);
-    	BaseTest.clickOn(returnDate);
-    	String selectedDate  = BaseTest.getText(calenderIconLocator2);
+    	browserUtility.clickOn(depatureDate);
+    	browserUtility.clickOn(calenderIconLocator2);
+    	browserUtility.clickOn(returnDate);
+    	String selectedDate  = BrowserUtility.getText(calenderIconLocator2);
     	System.out.println(selectedDate);
     	
     }
 
     public void openPassengerPopupAndAddAdult() {
-        BaseTest.clickOn(passengerButton);
-        BaseTest.clickOn(addOneAdult);
-        BaseTest.clickOn(doneButton);
+    	browserUtility.clickOn(passengerButton);
+    	browserUtility.clickOn(addOneAdult);
+    	browserUtility.clickOn(doneButton);
     }
 
     public void clickSearch() {
-        BaseTest.clickOn(searchButton);
+    	browserUtility.clickOn(searchButton);
     }
     
     

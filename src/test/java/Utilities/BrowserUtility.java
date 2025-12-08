@@ -15,7 +15,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.Keys;
 import java.util.NoSuchElementException;
 
-public class BaseTest {
+public class BrowserUtility {
 
     public final static String PROJECT_PATH = System.getProperty("user.dir") + "/";
     public final static String BROWSER = "chrome";
@@ -26,7 +26,7 @@ public class BaseTest {
     protected static JavascriptExecutor js = (JavascriptExecutor) driver;
 
     @BeforeMethod
-    public static void launchBrowser() {
+    public void launchBrowser() {
         // initialize the driver here (ensure chromedriver is on PATH or set system property)
         driver = new ChromeDriver();
         driver.manage().window().maximize();
@@ -36,12 +36,12 @@ public class BaseTest {
         wait = new WebDriverWait(driver, Duration.ofSeconds(20));
     }
     
-    public static WebDriver getDriver() {
+    public WebDriver getDriver() {
 		return driver;
 	}
 
     @AfterMethod
-    public static void tearDown() {
+    public void tearDown() {
         if (driver != null) {
             try {
                 driver.quit();
@@ -50,22 +50,22 @@ public class BaseTest {
     }
 
     // Helper: JS executor (created after driver exists)
-    protected static JavascriptExecutor getJs() {
+    protected JavascriptExecutor getJs() {
         return (JavascriptExecutor) driver;
     }
 
     // Basic helpers (use the shared static wait)
-    public static void clickOn(By locator) {
+    public void clickOn(By locator) {
         
         wait.until(ExpectedConditions.elementToBeClickable(locator)).click();
     }
     
-public static void clickOnLocatedElement(By locator) {
+public void clickOnLocatedElement(By locator) {
         
         wait.until(ExpectedConditions.visibilityOfElementLocated(locator)).click();
     }
 
-    public static void clearData(By locator) {
+    public void clearData(By locator) {
       
         wait.until(ExpectedConditions.elementToBeClickable(locator)).clear();
     }
@@ -76,21 +76,21 @@ public static void clickOnLocatedElement(By locator) {
         
     }
 
-    public static void sendKeysInput(By locator, String testData) {
+    public void sendKeysInput(By locator, String testData) {
      
         WebElement element = wait.until(ExpectedConditions.elementToBeClickable(locator));
         //element.clear();
         element.sendKeys(testData);
     }
 
-    public static void explicitWait(By locator) {
+    public void explicitWait(By locator) {
               wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
     }
 
 
 
     // find element helper (not required but kept)
-    public static WebElement findElementByLocator(By locator) {
+    public  WebElement findElementByLocator(By locator) {
        
         WebElement element = null;
         try {
@@ -101,7 +101,7 @@ public static void clickOnLocatedElement(By locator) {
         }
         return element;
     }
-    public static WebElement scrollIntoElement(WebDriver driver,By locator) {
+    public WebElement scrollIntoElement(WebDriver driver,By locator) {
     	WebElement element = wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
     	((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView();", element);
     	
@@ -109,25 +109,25 @@ public static void clickOnLocatedElement(By locator) {
     	
     }
     
-    public static void scrollIntoElementClick(WebDriver driver,By locator) {
+    public void scrollIntoElementClick(WebDriver driver,By locator) {
     	WebElement element = wait.until(ExpectedConditions.elementToBeClickable(locator));
         ((JavascriptExecutor) driver).executeScript("window.scrollTo(0, 0);");
     	((JavascriptExecutor) driver).executeScript("arguments[0].click();", element);
     	
     	
     }
-    public static void jsClick(WebDriver driver, WebElement element)
-    {    	
+    public void jsClick(WebDriver driver, By locator)
+    {    	WebElement element = wait.until(ExpectedConditions.elementToBeClickable(locator));
     	((JavascriptExecutor) driver).executeScript("arguments[0].click();", element);
     	//js.executeScript("arguments[0].click()", element);
     }
     // Optional helper to scroll to element using JS
-    public static void jsScrollToElement(WebElement element) {
+    public void jsScrollToElement(WebElement element) {
         try {
             getJs().executeScript("arguments[0].scrollIntoView();", element);
         } catch (Exception ignored) { }
     }
-    public static boolean isElementShowed(By locator) {
+    public boolean isElementShowed(By locator) {
     	WebElement located =findElementByLocator(locator);
     	if(located.isDisplayed()) {
 			System.out.println("reached till " +located.getText()+ " element");
