@@ -11,9 +11,9 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import Utilities.BaseTest;
+import Utilities.BrowserUtility;
 
-public class SpicejetCalenderPageObjects2 extends BaseTest {
+public class SpicejetCalenderPageObjects2 extends BrowserUtility {
 
 	// Only By locators at class level — no WebElement or wait initialization here
 
@@ -59,6 +59,7 @@ public class SpicejetCalenderPageObjects2 extends BaseTest {
 	public static final By flightsList = By.id("onward-flight-container");
 
 	String flightName = null;
+	BrowserUtility browserUtility = new BrowserUtility();
 
 	static WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
 	
@@ -73,13 +74,13 @@ public class SpicejetCalenderPageObjects2 extends BaseTest {
 	// Actions use BaseTest helper methods (clickOn, sendKeysInput, etc.)
 	public void enterFromToDetails(String from, String to) {
 		// clicking and typing via BaseTest helpers ensures waits are used correctly
-		BaseTest.clickOn(fromInputLocator);
-		BaseTest.clearData(fromInputLocator);
-		BaseTest.sendKeysInput(fromInputLocator, from);
+		browserUtility.clickOn(fromInputLocator);
+		browserUtility.clearData(fromInputLocator);
+		browserUtility.sendKeysInput(fromInputLocator, from);
 
-		BaseTest.clickOn(toInputLocator);
-		BaseTest.clearData(toInputLocator);
-		BaseTest.sendKeysInput(toInputLocator, to);
+		browserUtility.clickOn(toInputLocator);
+		browserUtility.clearData(toInputLocator);
+		browserUtility.sendKeysInput(toInputLocator, to);
 	}
 	
 	// Scrolls the calendar until the given month-year element exists, then returns it
@@ -131,38 +132,38 @@ public class SpicejetCalenderPageObjects2 extends BaseTest {
 	}
 	
 	public void selectDate() {
-		WebElement date1 =BaseTest.scrollIntoElement(driver, depatureMonthLocator);
+		WebElement date1 =browserUtility.scrollIntoElement(driver, depatureMonthLocator);
 		date1.findElement(depatureDay).click();
-		BaseTest.scrollIntoElementClick(driver, calenderIconLocator2);
-		WebElement date2 =BaseTest.scrollIntoElement(driver, returnMonthLocator);
+		browserUtility.scrollIntoElementClick(driver, calenderIconLocator2);
+		WebElement date2 =browserUtility.scrollIntoElement(driver, returnMonthLocator);
 		date2.findElement(returnDay).click();
 	}
 	public void openPassengerPopupAndAddAdult() {
 		js.executeScript("window.scrollTo(0, 0);");
-		 BaseTest.clickOn(passengerButton);
-		 BaseTest.isElementShowed(passengerButton);
+		browserUtility.clickOn(passengerButton);
+		browserUtility.isElementShowed(passengerButton);
 	    int desiredAdults = Integer.parseInt(adultCount);
 	    if (desiredAdults == 1) {
 	    	 
-	    	BaseTest.scrollIntoElementClick(driver, doneButton);
+	    	browserUtility.scrollIntoElementClick(driver, doneButton);
 	        
 	    }else {
-	    	BaseTest.scrollIntoElement(driver, addOneAdult);
-	    	BaseTest.clickOn(doneButton);
+	    	browserUtility.scrollIntoElement(driver, addOneAdult);
+	    	browserUtility.clickOn(doneButton);
 	    }
 	}
 	public void openPassengerPopupAndAddAdult1() {
-		BaseTest.scrollIntoElementClick(driver, passengerButton);
-		System.out.println(BaseTest.isElementShowed(passengerButton));
-		BaseTest.scrollIntoElement(driver, addOneAdult);
-		System.out.println(BaseTest.isElementShowed(doneButton));
-		BaseTest.clickOn(doneButton);
+		browserUtility.scrollIntoElementClick(driver, passengerButton);
+		System.out.println(browserUtility.isElementShowed(passengerButton));
+		browserUtility.scrollIntoElement(driver, addOneAdult);
+		System.out.println(browserUtility.isElementShowed(doneButton));
+		browserUtility.clickOn(doneButton);
 		
 		
 	}
 
 	public void clickSearch() {
-		BaseTest.clickOn(searchButton);
+		browserUtility.clickOn(searchButton);
 	}
 
 	public static void waitForpageToLoad(WebDriver driver) {
